@@ -12,6 +12,13 @@ import java.io.File;
  * 
  * @author Olivier Liechti
  */
+
+//traverser le système de fichier en dfs
+//obtenir la liste des enfants
+//descendre recursivement dans le système de fichier
+//visite(noeud recontré)
+//v.visite(first dossier), v.visite(dossier.sousdossier)
+//visite traite un noeud )(que ce soit un dossier ou un fichier)
 public class DFSFileExplorer implements IFileExplorer {
 
   @Override
