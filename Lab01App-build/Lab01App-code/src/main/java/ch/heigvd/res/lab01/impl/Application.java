@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.logging.Level;
@@ -92,6 +93,7 @@ public class Application implements IApplication {
        * one method provided by this class, which is responsible for storing the content of the
        * quote in a text file (and for generating the directories based on the tags).
        */
+      storeQuote(quote, "quote-"+i+1+".utf8");
       LOG.info(quote.getSource());
       for (String tag : quote.getTags()) {
         LOG.info("> " + tag);
@@ -124,8 +126,31 @@ public class Application implements IApplication {
    * @param filename the name of the file to create and where to store the quote text
    * @throws IOException 
    */
-  void storeQuote(Quote quote, String filename) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+  void storeQuote(Quote quote, String filename) throws IOException 
+  {
+    //on extrait le chemin de la quote
+    String listeTag[] = quote.getTags();
+    String chemin = WORKSPACE_DIRECTORY;
+    for(String tag : listeTag)
+    {
+        chemin+= "/" +tag;
+    }
+    
+    //on crée l'arborescence nécessaire
+    File arborescence = new File(chemin);
+    arborescence.mkdirs();
+    
+    //création du fichier de quote
+    chemin += "/" + filename;
+    File fichierQuote = new File(chemin);
+    fichierQuote.createNewFile();
+    
+    //écriture dans le fichier
+    PrintWriter writer = new PrintWriter(chemin, "UTF-8");
+    writer.print(quote.getQuote());
+    writer.close();
+    
+    //throw new UnsupportedOperationException("The sssssstudent has not implemented this method yet.");
   }
   
   /**
