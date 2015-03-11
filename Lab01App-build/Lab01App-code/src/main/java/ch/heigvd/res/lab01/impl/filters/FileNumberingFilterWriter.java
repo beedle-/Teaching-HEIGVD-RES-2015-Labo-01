@@ -19,23 +19,69 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   private static final Logger LOG = Logger.getLogger(FileNumberingFilterWriter.class.getName());
 
+    //index de ligne
+    private int indexLine = 1;
+  
   public FileNumberingFilterWriter(Writer out) {
     super(out);
   }
 
+  private String insertLineNumber(String str)
+  {
+    //Objet permettant la modification dynamique de chaine  
+    StringBuilder sb = new StringBuilder(str);
+          
+    //position de /n dans la chaîne
+    int positionNewLine = 0;
+    
+    //insertion du premier numéro de ligne
+    if(indexLine == 1)
+    {
+        sb.insert(positionNewLine, indexLine+"\t");
+        indexLine++;
+    }
+    
+    
+    while((positionNewLine = sb.indexOf("\n", positionNewLine+1))!= -1)
+    {
+        sb.insert(positionNewLine+1, indexLine+"\t");
+        indexLine++;
+    }
+    return sb.toString();
+  }
+  
   @Override
   public void write(String str, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+   
+    out.write(insertLineNumber(str.substring(off, off+len)));
+   // out.write(insertLineNumber(str), off, len);
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    String str = new String(cbuf);  
+    out.write(insertLineNumber(str.substring(off, off+len)));
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
-  public void write(int c) throws IOException {
-    throw new UnsupportedOperationException("The student has not implemented this method yet.");
+  public void write(int c) throws IOException {    
+    
+    if(indexLine == 1)
+    {
+        out.write(indexLine+"\t");
+        indexLine++;
+    }
+    
+    out.write(c);
+    
+    if(c == '\n')
+    {
+        out.write(indexLine+"\t");
+        indexLine++;
+    }
+    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }

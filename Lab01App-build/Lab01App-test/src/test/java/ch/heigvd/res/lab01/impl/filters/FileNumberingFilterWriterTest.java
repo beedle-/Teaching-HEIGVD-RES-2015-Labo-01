@@ -54,7 +54,8 @@ public class FileNumberingFilterWriterTest {
     FileNumberingFilterWriter writer = new FileNumberingFilterWriter(stringWriter);
     writer.write(line1_1);
     writer.write(line1_2);
-    writer.write(line2);  
+    writer.write(line2);
+    System.out.println(stringWriter.toString());
     Assert.assertEquals("1\t" + line1_1 + line1_2 + "2\t" + line2, stringWriter.toString());
   }
 
@@ -65,7 +66,7 @@ public class FileNumberingFilterWriterTest {
     FileNumberingFilterWriter writer = new FileNumberingFilterWriter(stringWriter);
     int startIndex = 2;
     int len = 4;
-    writer.write(line, startIndex, len);
+    writer.write(line, startIndex, len);                        
     Assert.assertEquals("1\t" + "only", stringWriter.toString());
   }
 
