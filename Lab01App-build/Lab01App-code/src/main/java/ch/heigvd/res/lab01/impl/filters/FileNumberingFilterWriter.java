@@ -21,6 +21,9 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
     //index de ligne
     private int indexLine = 1;
+    
+    //flag indiquant la présence d'un R
+    private boolean flagR = false;
   
   public FileNumberingFilterWriter(Writer out) {
     super(out);
@@ -40,13 +43,36 @@ public class FileNumberingFilterWriter extends FilterWriter {
         sb.insert(positionNewLine, indexLine+"\t");
         indexLine++;
     }
-    
-    
+   
+    for(int i = 0; i < sb.length(); i++)
+    {
+        if(sb.charAt(i) == '\r')
+            if(sb.charAt(i+1)== '\n')
+            {
+                i = i + 2;
+                sb.insert(i, indexLine+"\t");
+                indexLine++;
+            }
+            else
+            {   
+                i++;
+                sb.insert(i, indexLine+"\t");
+                indexLine++;
+            }
+        else if(sb.charAt(i)=='\n')
+        {
+            i++;
+            sb.insert(i, indexLine+ "\t");
+            indexLine++;
+        }
+        
+    }
+     /*   
     while((positionNewLine = sb.indexOf("\n", positionNewLine+1))!= -1)
     {
         sb.insert(positionNewLine+1, indexLine+"\t");
         indexLine++;
-    }
+    }*/
     return sb.toString();
   }
   
@@ -67,21 +93,42 @@ public class FileNumberingFilterWriter extends FilterWriter {
 
   @Override
   public void write(int c) throws IOException {    
-    
     if(indexLine == 1)
     {
         out.write(indexLine+"\t");
         indexLine++;
     }
-    
-    out.write(c);
-    
-    if(c == '\n')
+        
+    if(c == '\r')
     {
+        flagR = true;
+        out.write("\r");
+    }       
+    else if(c == '\n')
+    {
+        if(flagR)
+        {
+            flagR = false;
+            out.write(c);
+        } 
+        else
+        {
+            out.write(c);    
+        }
         out.write(indexLine+"\t");
         indexLine++;
+        flagR = false;
     }
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
+    else
+    {
+        if(flagR)
+        {
+            out.write(indexLine+"\t");
+            indexLine++;
+        }
+        flagR = false;
+        out.write(c);
+    }
   }
 
 }
