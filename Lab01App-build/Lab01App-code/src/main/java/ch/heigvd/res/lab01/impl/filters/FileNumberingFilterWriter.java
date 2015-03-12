@@ -14,6 +14,7 @@ import java.util.logging.Logger;
  * Hello\n\World -> 1\Hello\n2\tWorld
  *
  * @author Olivier Liechti
+ * @author Bastien Rouiller
  */
 public class FileNumberingFilterWriter extends FilterWriter {
 
@@ -29,6 +30,8 @@ public class FileNumberingFilterWriter extends FilterWriter {
     super(out);
   }
 
+  // Fonction prenant un string en parametre et renvoyant ce même string avec
+  // numérotation des lignes
   private String insertLineNumber(String str)
   {
     //Objet permettant la modification dynamique de chaine  
@@ -44,22 +47,23 @@ public class FileNumberingFilterWriter extends FilterWriter {
         indexLine++;
     }
    
+    //on parcourt la chaine
     for(int i = 0; i < sb.length(); i++)
     {
         if(sb.charAt(i) == '\r')
-            if(sb.charAt(i+1)== '\n')
+            if(sb.charAt(i+1)== '\n')  //traitement du cas \r\n
             {
                 i = i + 2;
                 sb.insert(i, indexLine+"\t");
                 indexLine++;
             }
-            else
+            else    //simple \r
             {   
                 i++;
                 sb.insert(i, indexLine+"\t");
                 indexLine++;
             }
-        else if(sb.charAt(i)=='\n')
+        else if(sb.charAt(i)=='\n')     // simple \n
         {
             i++;
             sb.insert(i, indexLine+ "\t");
@@ -67,38 +71,31 @@ public class FileNumberingFilterWriter extends FilterWriter {
         }
         
     }
-     /*   
-    while((positionNewLine = sb.indexOf("\n", positionNewLine+1))!= -1)
-    {
-        sb.insert(positionNewLine+1, indexLine+"\t");
-        indexLine++;
-    }*/
     return sb.toString();
   }
   
   @Override
   public void write(String str, int off, int len) throws IOException {
-   
     out.write(insertLineNumber(str.substring(off, off+len)));
-   // out.write(insertLineNumber(str), off, len);
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void write(char[] cbuf, int off, int len) throws IOException {
     String str = new String(cbuf);  
     out.write(insertLineNumber(str.substring(off, off+len)));
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
   @Override
   public void write(int c) throws IOException {    
+   
+    //Numérotation de la première ligne
     if(indexLine == 1)
     {
         out.write(indexLine+"\t");
         indexLine++;
     }
         
+    //si on rencontre un r, on memorise afin de détecter un \r\n plus tard
     if(c == '\r')
     {
         flagR = true;
@@ -106,12 +103,12 @@ public class FileNumberingFilterWriter extends FilterWriter {
     }       
     else if(c == '\n')
     {
-        if(flagR)
+        if(flagR)    //  \r suivit d'un \n
         {
             flagR = false;
             out.write(c);
         } 
-        else
+        else   // \n seul
         {
             out.write(c);    
         }
@@ -119,7 +116,7 @@ public class FileNumberingFilterWriter extends FilterWriter {
         indexLine++;
         flagR = false;
     }
-    else
+    else  //dans le cas d'un caractère standard
     {
         if(flagR)
         {

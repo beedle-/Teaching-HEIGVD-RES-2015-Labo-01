@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 /**
  *
  * @author Olivier Liechti
+ * @author Bastien Rouiller
  */
 public class Utils {
 
@@ -22,37 +23,38 @@ public class Utils {
   public static String[] getNextLine(String lines) {
       
     String array[] = new String[2];
-    String sb = lines;
-    for(int i = 0; i < sb.length(); i++)
+    
+    //on parcourt la chaîne tant qu'on a pas de nouvelle ligne ou 
+    //qu'on arrive à la fin de cette dernière
+    for(int i = 0; i < lines.length(); i++)
     {
-        if(sb.charAt(i) == '\r')
-            if(i < sb.length()-1 && sb.charAt(i+1)== '\n')
+        if(lines.charAt(i) == '\r')
+            if(i < lines.length()-1 && lines.charAt(i+1)== '\n')  //cas \r\n
             {
-                array[0] = sb.substring(0,i+2);
-                array[1] = sb.substring(i+2);
+                array[0] = lines.substring(0,i+2);
+                array[1] = lines.substring(i+2);
                 break;
             }
-            else
+            else        //simple \r
             {   
-                array[0] = sb.substring(0, i+1);
-                array[1] = sb.substring(i+1);
+                array[0] = lines.substring(0, i+1);
+                array[1] = lines.substring(i+1);
                 break;
             }
-        else if(sb.charAt(i)=='\n')
+        else if(lines.charAt(i)=='\n')  // simple \n
         {
-            array[0] = sb.substring(0, i+1);
-            array[1] = sb.substring(i+1);
+            array[0] = lines.substring(0, i+1);
+            array[1] = lines.substring(i+1);
             break;
         }   
-        if(i == sb.length()-1) //si aucun retour à la ligne
+        if(i == lines.length()-1) //si aucun retour à la ligne
         {
             array[0] = "";
-            array[1] = sb;
+            array[1] = lines;
         }
     }
     
     return array;
-    //throw new UnsupportedOperationException("The student has not implemented this method yet.");
   }
 
 }

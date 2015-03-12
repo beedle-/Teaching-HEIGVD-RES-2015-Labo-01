@@ -12,24 +12,25 @@ import java.util.LinkedList;
  * files in the directory and then moves into the subdirectories.
  * 
  * @author Olivier Liechti
+ * @author Bastien Rouiller
  */
 
-//traverser le système de fichier en dfs
-//obtenir la liste des enfants
-//descendre recursivement dans le système de fichier
-//visite(noeud recontré)
-//v.visite(first dossier), v.visite(dossier.sousdossier)
-//visite traite un noeud )(que ce soit un dossier ou un fichier)
+
 public class DFSFileExplorer implements IFileExplorer {
 
   @Override
   public void explore(File rootDirectory, IFileVisitor visitor) {
+    //on commence par visiter le fichier/dossier
     visitor.visit(rootDirectory);
+    
+    //on le parcourt uniquement si il s'agit d'un dossier
     if(rootDirectory.isDirectory())
     {
         File[] maListe;
         maListe = rootDirectory.listFiles();
         
+        //on stocke séparemment fichiers et dossiers pour obtenir le bon ordre
+        // en résultat
         LinkedList<File> listeFile = new LinkedList<>();
         LinkedList<File> listeDirectory = new LinkedList<>();
         
